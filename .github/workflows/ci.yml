@@ -33,5 +33,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
+      # 1. Авторизация в Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      # 2. Сборка образа (обрати внимание, мы добавляем твой логин в название образа!)
       - name: Build Docker image
-        run: docker build -t myapp:latest .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest .
+        
+      # 3. Отправка образа на Docker Hub
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
